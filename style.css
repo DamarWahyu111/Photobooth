@@ -1,4 +1,4 @@
-﻿/* CSS Utama & Fallback (Penyelamat jika CDN Tailwind gagal dimuat) */
+/* CSS Utama & Fallback (Penyelamat jika CDN Tailwind gagal dimuat) */
         body {
             font-family: 'DM Sans', sans-serif;
             background-color: #fafafa;
@@ -6,6 +6,10 @@
             -webkit-tap-highlight-color: transparent;
         }
         .font-serif { font-family: 'Playfair Display', serif !important; }
+
+        /* Sembunyikan scrollbar untuk area horizontal scroll */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
         .mirror { transform: scaleX(-1); }
 
@@ -50,6 +54,14 @@
             background-image: radial-gradient(#d1d5db 15%, transparent 15%);
             background-size: 10px 10px;
             background-color: #f3f4f6;
+        }
+        .pattern-lucu {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill='%23fbcfe8'%3E%3Ccircle cx='30' cy='22' r='6'/%3E%3Ccircle cx='38' cy='30' r='6'/%3E%3Ccircle cx='30' cy='38' r='6'/%3E%3Ccircle cx='22' cy='30' r='6'/%3E%3Ccircle cx='30' cy='30' r='4' fill='%23f9a8d4'/%3E%3C/g%3E%3C/svg%3E");
+            background-size: 30px 30px;
+        }
+        .pattern-grid {
+            background-image: linear-gradient(#1e293b 1px, transparent 1px), linear-gradient(90deg, #1e293b 1px, transparent 1px);
+            background-size: 20px 20px;
         }
 
         /* FALLBACKS DARURAT JIKA CSS DIBLOKIR/GAGAL DIMUAT TOTAL */

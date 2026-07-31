@@ -1,4 +1,4 @@
-﻿/* --- MODULE 1: config.js --- */
+/* --- MODULE 1: config.js --- */
         const FrameConfigs = {
             'minimalis': { layout: '4-strip', name: 'Minimalis', desc: 'Putih Klasik', uiBg: '#ffffff', uiBoxes: '#e5e5e5', drawBg: '#ffffff', textColor: '#262626', subColor: '#737373' },
             'noir': { layout: '4-strip', name: 'Noir', desc: 'Hitam Elegan', uiBg: '#171717', uiBoxes: '#404040', drawBg: '#171717', textColor: '#ffffff', subColor: '#a3a3a3' },
@@ -9,6 +9,12 @@
             'blush': { layout: '4-strip', name: 'Blush', desc: 'Gradasi Y2K', uiBg: 'linear-gradient(to bottom right, #ffe4e6, #fff7ed)', uiBoxes: 'rgba(255,255,255,0.6)', drawBg: 'gradient-blush', textColor: '#831843', subColor: '#be185d' },
             'checker': { layout: '4-strip', name: 'Checker', desc: 'Papan Catur', uiBg: '#f5f5f4', uiBoxes: 'rgba(255,255,255,0.9)', drawBg: 'pattern-checker', textColor: '#262626', subColor: '#737373' },
             'polkadot': { layout: '4-strip', name: 'Polkadot', desc: 'Titik Retro', uiBg: '#fafafa', uiBoxes: 'rgba(255,255,255,0.95)', drawBg: 'pattern-dots', textColor: '#262626', subColor: '#737373' },
+            'lucu': { layout: '4-strip', name: 'Lucu Gemes', desc: 'Pastel Ceria', uiBg: '#fdf4ff', uiBoxes: '#fce7f3', drawBg: 'pattern-lucu', textColor: '#831843', subColor: '#be185d' },
+            'sangar': { layout: '4-strip', name: 'Sangar', desc: 'Dark & Fierce', uiBg: '#0f172a', uiBoxes: '#7f1d1d', drawBg: 'pattern-grid', textColor: '#ef4444', subColor: '#b91c1c' },
+            'unisex': { layout: '4-strip', name: 'Urban', desc: 'Cool Unisex', uiBg: '#f3f4f6', uiBoxes: '#94a3b8', drawBg: '#cbd5e1', textColor: '#0f172a', subColor: '#334155' },
+            'y2k-stars': { layout: '4-strip', name: 'Y2K Stars', desc: 'Cute Pink 90s', uiBg: 'linear-gradient(135deg, #ffc8dd 0%, #bde0fe 100%)', uiBoxes: 'rgba(255,255,255,0.7)', drawBg: 'img:assets/bg_y2k_stars.png', textColor: '#ff006e', subColor: '#fb5607' },
+            'clouds': { layout: '4-strip', name: 'Dreamy Clouds', desc: 'Pastel Sky', uiBg: '#a2d2ff', uiBoxes: 'rgba(255,255,255,0.8)', drawBg: 'img:assets/bg_cloud_sky.png', textColor: '#0077b6', subColor: '#03045e' },
+            'vintage-floral': { layout: '4-strip', name: 'Vintage Floral', desc: 'Soft Warm', uiBg: '#e9edc9', uiBoxes: 'rgba(255,255,255,0.8)', drawBg: 'img:assets/bg_vintage_floral.png', textColor: '#606c38', subColor: '#283618' },
             'polaroid': { layout: '1-shot', name: 'Polaroid', desc: '1 Foto Instan', uiBg: '#ffffff', uiBoxes: '#e5e5e5', drawBg: '#ffffff', textColor: '#171717', subColor: '#525252' }
         };
 
@@ -59,11 +65,12 @@
                     }
 
                     let bgStyle = config.uiBg.startsWith('linear') ? `background-image: ${config.uiBg};` : `background-color: ${config.uiBg};`;
+                    let patternClass = (config.drawBg && config.drawBg.includes('pattern')) ? config.drawBg : '';
 
                     html += `
-                        <label class="cursor-pointer group relative">
+                        <label class="cursor-pointer group relative flex-shrink-0 snap-center w-36 sm:w-40">
                             <input type="radio" name="frame-choice" value="${id}" ${isChecked} class="sr-only frame-radio">
-                            <div class="w-full p-2 rounded-2xl border-2 border-transparent frame-card transition-all flex flex-col gap-1 relative overflow-hidden shadow-sm" style="aspect-ratio: 1/2.2; ${bgStyle} color: ${config.textColor};">
+                            <div class="w-full p-2 rounded-2xl border-2 border-transparent frame-card transition-all flex flex-col gap-1 relative overflow-hidden shadow-sm ${patternClass}" style="aspect-ratio: 1/2.2; ${bgStyle} color: ${config.textColor};">
                                 ${boxesHtml}
                                 <div class="absolute inset-0 ring-1 ring-inset ring-black ring-opacity-5 rounded-2xl pointer-events-none"></div>
                             </div>
@@ -77,11 +84,49 @@
                 }
                 container.innerHTML = html;
 
+                // Fungsi Scroll dengan Mouse (Drag & Wheel) untuk Desktop
+                container.addEventListener('wheel', (evt) => {
+                    evt.preventDefault();
+                    container.scrollLeft += evt.deltaY;
+                });
+
+                let isDown = false, startX, scrollLeft, didMove = false;
+                container.addEventListener('mousedown', (e) => {
+                    isDown = true; didMove = false;
+                    startX = e.pageX - container.offsetLeft;
+                    scrollLeft = container.scrollLeft;
+                });
+                container.addEventListener('mouseleave', () => { isDown = false; });
+                container.addEventListener('mouseup', () => { isDown = false; });
+                container.addEventListener('mousemove', (e) => {
+                    if (!isDown) return;
+                    const x = e.pageX - container.offsetLeft;
+                    const walk = (x - startX) * 2;
+                    if(Math.abs(walk) > 5) didMove = true;
+                    container.scrollLeft = scrollLeft - walk;
+                });
+                container.addEventListener('click', (e) => {
+                    // Cegah klik terpilih jika user hanya berniat drag/geser
+                    if (didMove) { e.preventDefault(); e.stopPropagation(); }
+                }, true);
+
                 container.addEventListener('change', (e) => {
                     if (e.target.name === 'frame-choice') {
                         AppState.selectedFrameId = e.target.value;
                     }
                 });
+
+                // Tombol Navigasi Manual
+                const btnLeft = document.getElementById('btn-scroll-left');
+                const btnRight = document.getElementById('btn-scroll-right');
+                if (btnLeft && btnRight) {
+                    btnLeft.addEventListener('click', () => {
+                        container.scrollBy({ left: -200, behavior: 'smooth' });
+                    });
+                    btnRight.addEventListener('click', () => {
+                        container.scrollBy({ left: 200, behavior: 'smooth' });
+                    });
+                }
             },
 
             showView(viewId) {
@@ -286,8 +331,19 @@
                 return cvs.toDataURL('image/jpeg', 0.95);
             },
 
-            drawBgPattern(ctx, style, w, h) {
-                if(style === 'pattern-checker') {
+            async drawBgPattern(ctx, style, w, h) {
+                if(style.startsWith('img:')) {
+                    const imgUrl = style.substring(4);
+                    try {
+                        const img = await this.loadImg(imgUrl);
+                        const pattern = ctx.createPattern(img, 'repeat');
+                        ctx.fillStyle = pattern; 
+                        ctx.fillRect(0,0,w,h);
+                    } catch (e) {
+                        ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,w,h);
+                    }
+                }
+                else if(style === 'pattern-checker') {
                     ctx.fillStyle = '#e5e5e5'; ctx.fillRect(0,0,w,h);
                     ctx.fillStyle = '#f5f5f5';
                     for(let y=0; y<h; y+=80) {
@@ -309,6 +365,30 @@
                     const grd = ctx.createLinearGradient(0,0,w,h);
                     grd.addColorStop(0, '#ffe4e6'); grd.addColorStop(1, '#fff7ed');
                     ctx.fillStyle = grd; ctx.fillRect(0,0,w,h);
+                }
+                else if(style === 'pattern-lucu') {
+                    ctx.fillStyle = '#fdf4ff'; ctx.fillRect(0,0,w,h);
+                    ctx.fillStyle = '#fbcfe8';
+                    for(let y=0; y<h; y+=80) {
+                        for(let x=0; x<w; x+=80) {
+                            if((x/80 + y/80)%2 !== 0) {
+                                ctx.beginPath(); ctx.arc(x+40,y+40,25,0,Math.PI*2); ctx.fill();
+                            } else {
+                                ctx.fillRect(x+35, y+20, 10, 40);
+                                ctx.fillRect(x+20, y+35, 40, 10);
+                            }
+                        }
+                    }
+                }
+                else if(style === 'pattern-grid') {
+                    ctx.fillStyle = '#0f172a'; ctx.fillRect(0,0,w,h);
+                    ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 3;
+                    for(let y=0; y<h; y+=50) {
+                        ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke();
+                    }
+                    for(let x=0; x<w; x+=50) {
+                        ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke();
+                    }
                 }
                 else {
                     ctx.fillStyle = style; ctx.fillRect(0,0,w,h);
@@ -334,7 +414,7 @@
                     cvs.width = pW + (margin * 2);
                     cvs.height = margin + pH + bottomM;
                     
-                    this.drawBgPattern(ctx, config.drawBg, cvs.width, cvs.height);
+                    await this.drawBgPattern(ctx, config.drawBg, cvs.width, cvs.height);
                     
                     const img = await this.loadImg(AppState.capturedPhotos[0]);
                     
@@ -349,10 +429,16 @@
                     cvs.width = pW + (margin * 2);
                     cvs.height = margin + (4 * pH) + (3 * margin) + bottomM;
 
-                    this.drawBgPattern(ctx, config.drawBg, cvs.width, cvs.height);
+                    await this.drawBgPattern(ctx, config.drawBg, cvs.width, cvs.height);
 
-                    if(config.drawBg.includes('pattern')) {
-                        ctx.fillStyle = 'rgba(255,255,255,0.9)';
+                    if(config.drawBg.includes('pattern') || config.drawBg.startsWith('img:')) {
+                        if(config.drawBg === 'pattern-grid') {
+                            ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+                        } else if(config.drawBg === 'pattern-lucu') {
+                            ctx.fillStyle = 'rgba(253, 244, 255, 0.95)';
+                        } else {
+                            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                        }
                         ctx.fillRect(0, cvs.height - bottomM - 50, cvs.width, bottomM + 50);
                     }
 
