@@ -31,7 +31,9 @@
             stream: null,
             isFrontCamera: true,
             capturedPhotos: [], // Menyimpan foto murni (tanpa filter)
-            finalUrl: null
+            finalUrl: null,
+            currentPhotoIndex: 1,
+            totalPhotosToTake: 4
         };
 
         /* --- STREAMING_CHUNK: MODULE 2 - Manajemen UI (Tampilan) --- */
@@ -169,14 +171,56 @@
                     toast.style.opacity = '0'; toast.style.transform = 'translateY(-20px)'; toast.style.transition = 'all 0.4s ease';
                     setTimeout(() => toast.remove(), 400);
                 }, 3000);
+            },
+
+            renderLivePreview(frameId) {
+                const container = document.getElementById('live-frame-preview');
+                const config = FrameConfigs[frameId];
+                
+                let boxesHtml = '';
+                const totalPhotos = config.layout === '1-shot' ? 1 : 4;
+
+                for (let i = 1; i <= totalPhotos; i++) {
+                    if (config.layout === '1-shot') {
+                        boxesHtml += `
+                            <div class="w-full mb-2 border border-black border-opacity-5 relative overflow-hidden bg-gray-200" style="aspect-ratio: 1/1; background-color: ${config.uiBoxes};">
+                                <img id="live-slot-${i}" class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-300">
+                            </div>
+                            <div class="h-4 w-full flex items-center justify-center">
+                                <div class="w-1/2 h-1 rounded-full" style="background-color: ${config.uiBoxes};"></div>
+                            </div>
+                        `;
+                    } else {
+                        boxesHtml += `
+                            <div class="w-full flex-1 relative overflow-hidden rounded-[2px] shadow-sm bg-gray-200" style="background-color: ${config.uiBoxes};">
+                                <img id="live-slot-${i}" class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-300">
+                            </div>
+                        `;
+                    }
+                }
+                
+                if (config.layout !== '1-shot') {
+                     boxesHtml += `
+                            <div class="h-3 w-full mt-1 flex items-center justify-center">
+                                <div class="w-1/3 h-1 opacity-50 rounded-full" style="background-color: ${config.textColor};"></div>
+                            </div>
+                        `;
+                }
+
+                let bgStyle = config.uiBg.startsWith('linear') ? `background-image: ${config.uiBg};` : `background-color: ${config.uiBg};`;
+                let patternClass = (config.drawBg && config.drawBg.includes('pattern')) ? config.drawBg : '';
+
+                container.innerHTML = `
+                    <div class="w-full p-2 md:p-3 rounded-2xl shadow-lg border border-gray-200 flex flex-col gap-1 md:gap-1.5 relative overflow-hidden ${patternClass}" style="aspect-ratio: 1/2.2; ${bgStyle}">
+                        ${boxesHtml}
+                    </div>
+                `;
             }
         };
 
         /* --- STREAMING_CHUNK: MODULE 3 - Pengendali Kamera --- */
         const Camera = {
             video: document.getElementById('camera-stream'),
-            select: document.getElementById('camera-select'),
-            filter: document.getElementById('filter-select'),
 
             async init() {
                 try {
@@ -184,19 +228,8 @@
                     const devices = await navigator.mediaDevices.enumerateDevices();
                     const vDevices = devices.filter(d => d.kind === 'videoinput');
                     
-                    this.select.innerHTML = '';
-                    if(vDevices.length === 0) {
-                        this.select.innerHTML = '<option value="">Kamera tidak ditemukan</option>';
-                        return;
-                    }
-
-                    vDevices.forEach((d, i) => {
-                        const opt = document.createElement('option');
-                        opt.value = d.deviceId; opt.text = d.label || `Kamera ${i + 1}`;
-                        this.select.appendChild(opt);
-                    });
-
                     if (vDevices.length > 0) this.startStream(vDevices[0].deviceId);
+                    else UI.showToast("Kamera tidak ditemukan", "error");
                 } catch (err) {
                     UI.showToast("Gagal mengakses kamera. Mohon izinkan kamera di browser Anda.", "error");
                 }
@@ -232,48 +265,50 @@
 
         /* --- STREAMING_CHUNK: MODULE 4 - Logika Pemotretan dan Pemrosesan Gambar (Canvas) --- */
         const Capture = {
-            async start() {
+            async takeSinglePhoto() {
                 if (!AppState.stream) {
                     UI.showToast("Kamera belum aktif.", "error");
                     return;
                 }
-                const config = FrameConfigs[AppState.selectedFrameId];
-                const totalPhotos = config.layout === '1-shot' ? 1 : 4;
 
-                document.getElementById('camera-controls').classList.add('opacity-40', 'pointer-events-none');
+                document.getElementById('btn-take-photo').classList.add('hidden');
                 
-                const progContainer = document.getElementById('strip-progress');
-                progContainer.classList.remove('opacity-0');
-                for(let i=1; i<=4; i++) {
-                    const dot = document.getElementById(`dot-${i}`);
-                    dot.className = "w-3 h-3 rounded-full bg-white bg-opacity-40 progress-dot";
-                    dot.style.display = (i <= totalPhotos) ? 'block' : 'none';
-                }
-
-                AppState.capturedPhotos = []; // Reset array foto murni
-
-                for (let i = 1; i <= totalPhotos; i++) {
-                    const dot = document.getElementById(`dot-${i}`);
+                const dot = document.getElementById(`dot-${AppState.currentPhotoIndex}`);
+                if(dot) {
                     dot.classList.add('active');
                     dot.classList.remove('bg-opacity-40');
-                    
-                    await this.countdown(i, totalPhotos);
-                    
-                    const isSquare = (config.layout === '1-shot');
-                    // Snap foto original (tanpa filter CSS terbakar) agar filter bisa diganti belakangan
-                    AppState.capturedPhotos.push(this.snap(isSquare));
-                    
-                    dot.classList.remove('active');
-                    dot.classList.add('done');
-                    if (i < totalPhotos) await new Promise(res => setTimeout(res, 1200));
                 }
 
-                UI.showToast("Menyusun foto estetik...", "info");
-                document.getElementById('countdown-display').classList.remove('hidden');
-                document.getElementById('countdown-text').innerText = "✨";
-                document.getElementById('instruction-text').innerText = "Memproses...";
+                await this.countdown(AppState.currentPhotoIndex, AppState.totalPhotosToTake);
                 
-                await this.renderCanvas(config);
+                const config = FrameConfigs[AppState.selectedFrameId];
+                const isSquare = (config.layout === '1-shot');
+                
+                const photoData = this.snap(isSquare);
+                
+                // Tampilkan preview
+                const preview = document.getElementById('camera-preview');
+                preview.src = photoData;
+                preview.classList.remove('hidden');
+                
+                if (AppState.isFrontCamera) {
+                    preview.classList.add('mirror');
+                } else {
+                    preview.classList.remove('mirror');
+                }
+
+                // Masukkan ke live slot
+                const liveSlot = document.getElementById(`live-slot-${AppState.currentPhotoIndex}`);
+                if (liveSlot) {
+                    liveSlot.src = photoData;
+                    liveSlot.classList.remove('opacity-0');
+                    if (AppState.isFrontCamera) liveSlot.classList.add('mirror');
+                    else liveSlot.classList.remove('mirror');
+                }
+                
+                // Tampilkan tombol konfirmasi Ulang / Lanjut
+                document.getElementById('confirm-controls').classList.remove('hidden');
+                document.getElementById('confirm-controls').classList.add('flex');
             },
 
             countdown(current, total) {
@@ -515,9 +550,27 @@
                 const choices = document.getElementsByName('frame-choice');
                 choices.forEach(r => { if(r.checked) AppState.selectedFrameId = r.value; });
                 
-                const isPolaroid = FrameConfigs[AppState.selectedFrameId].layout === '1-shot';
-                document.getElementById('btn-start-text').innerText = isPolaroid ? "Jepret Polaroid (1x)" : "Mulai Memotret (4x)";
+                const config = FrameConfigs[AppState.selectedFrameId];
+                AppState.totalPhotosToTake = config.layout === '1-shot' ? 1 : 4;
+                AppState.currentPhotoIndex = 1;
+                AppState.capturedPhotos = [];
                 
+                // Reset UI kamera
+                const progContainer = document.getElementById('strip-progress');
+                progContainer.classList.remove('opacity-0');
+                for(let i=1; i<=4; i++) {
+                    const dot = document.getElementById(`dot-${i}`);
+                    dot.className = "w-3 h-3 rounded-full bg-white bg-opacity-40 progress-dot";
+                    dot.style.display = (i <= AppState.totalPhotosToTake) ? 'block' : 'none';
+                }
+                
+                document.getElementById('btn-take-photo').classList.remove('hidden');
+                document.getElementById('confirm-controls').classList.add('hidden');
+                document.getElementById('confirm-controls').classList.remove('flex');
+                document.getElementById('camera-preview').classList.add('hidden');
+                
+                UI.renderLivePreview(AppState.selectedFrameId);
+
                 UI.showView('camera');
                 Camera.init();
             });
@@ -526,39 +579,72 @@
                 if (AppState.stream) AppState.stream.getTracks().forEach(t => t.stop());
                 UI.showView('home');
             });
-
-            document.getElementById('camera-select').addEventListener('change', e => e.target.value && Camera.startStream(e.target.value));
             
-            const camFilter = document.getElementById('filter-select');
             const postFilter = document.getElementById('post-filter-select');
-            
-            // Sinkronisasi pilihan filter dari kamera ke menu hasil
-            camFilter.addEventListener('change', e => {
-                AppState.selectedFilter = e.target.value;
-                postFilter.value = e.target.value; // Samakan nilai dropdown kedua
-                Camera.applyFilter();
-            });
 
             // Fitur Ganti Filter Instan di layar hasil (tanpa auto-download)
             postFilter.addEventListener('change', e => {
                 AppState.selectedFilter = e.target.value;
-                camFilter.value = e.target.value; // Sinkronkan balik
                 UI.showToast("Menerapkan filter baru...", "info");
                 Capture.renderCanvas(FrameConfigs[AppState.selectedFrameId], false); // false = jangan download ulang otomatis
             });
-            
-            document.getElementById('night-mode-toggle').addEventListener('change', e => {
-                AppState.isNightMode = e.target.checked;
-                Camera.applyFilter();
-                UI.showToast(AppState.isNightMode ? "Mode Malam AKTIF" : "Mode Malam NONAKTIF");
+
+            document.getElementById('btn-take-photo').addEventListener('click', () => {
+                Capture.takeSinglePhoto();
             });
 
-            document.getElementById('btn-start-capture').addEventListener('click', () => Capture.start());
+            document.getElementById('btn-ulang-photo').addEventListener('click', () => {
+                document.getElementById('camera-preview').classList.add('hidden');
+                document.getElementById('confirm-controls').classList.add('hidden');
+                document.getElementById('confirm-controls').classList.remove('flex');
+                document.getElementById('btn-take-photo').classList.remove('hidden');
+                
+                const dot = document.getElementById(`dot-${AppState.currentPhotoIndex}`);
+                if(dot) {
+                    dot.classList.remove('active');
+                    dot.classList.add('bg-opacity-40');
+                }
+
+                const liveSlot = document.getElementById(`live-slot-${AppState.currentPhotoIndex}`);
+                if(liveSlot) {
+                    liveSlot.src = '';
+                    liveSlot.classList.add('opacity-0');
+                }
+            });
+
+            document.getElementById('btn-lanjut-photo').addEventListener('click', async () => {
+                const preview = document.getElementById('camera-preview');
+                AppState.capturedPhotos.push(preview.src);
+                
+                const dot = document.getElementById(`dot-${AppState.currentPhotoIndex}`);
+                if(dot) {
+                    dot.classList.remove('active');
+                    dot.classList.add('done');
+                }
+
+                preview.classList.add('hidden');
+                document.getElementById('confirm-controls').classList.add('hidden');
+                document.getElementById('confirm-controls').classList.remove('flex');
+                
+                if (AppState.currentPhotoIndex < AppState.totalPhotosToTake) {
+                    AppState.currentPhotoIndex++;
+                    document.getElementById('btn-take-photo').classList.remove('hidden');
+                } else {
+                    UI.showToast("Menyusun foto estetik...", "info");
+                    document.getElementById('countdown-display').classList.remove('hidden');
+                    document.getElementById('countdown-text').innerText = "✨";
+                    document.getElementById('instruction-text').innerText = "Memproses...";
+                    
+                    const config = FrameConfigs[AppState.selectedFrameId];
+                    await Capture.renderCanvas(config);
+                }
+            });
 
             document.getElementById('btn-retake').addEventListener('click', () => {
-                UI.showView('camera');
-                document.getElementById('camera-controls').classList.remove('opacity-40', 'pointer-events-none');
-                document.getElementById('strip-progress').classList.add('opacity-0');
+                // Saat user klik foto ulang dari menu akhir
+                if (AppState.stream) AppState.stream.getTracks().forEach(t => t.stop());
+                UI.showView('home');
+                UI.showToast("Silakan pilih frame dan mulai lagi.", "info");
             });
 
             document.getElementById('btn-download').addEventListener('click', () => Capture.autoDownload());

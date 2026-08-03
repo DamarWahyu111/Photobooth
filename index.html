@@ -56,71 +56,67 @@
             </button>
         </section>
 
-        <section id="view-camera" class="w-full hidden flex-col items-center animate-fade-in">
+        <section id="view-camera" class="w-full hidden flex-row items-start justify-center gap-2 sm:gap-6 animate-fade-in px-1 sm:px-2 max-w-5xl mx-auto" style="flex-wrap: nowrap;">
             
-            <div class="relative w-full max-w-md bg-gray-900 rounded-2xl overflow-hidden shadow-2xl mb-6 border-white" style="aspect-ratio: 3/4; border-width: 6px;">
-                <video id="camera-stream" autoplay playsinline class="w-full h-full object-cover"></video>
+            <!-- Kolom Kiri: Kamera dan Kontrol -->
+            <div class="flex flex-col items-center" style="width: 65%; max-width: 450px;">
                 
-                <div id="strip-progress" class="absolute top-5 left-0 right-0 flex justify-center gap-3 opacity-0 transition-opacity duration-300 z-20">
-                    <div class="w-3 h-3 rounded-full bg-white bg-opacity-40 progress-dot" id="dot-1"></div>
-                    <div class="w-3 h-3 rounded-full bg-white bg-opacity-40 progress-dot" id="dot-2"></div>
-                    <div class="w-3 h-3 rounded-full bg-white bg-opacity-40 progress-dot" id="dot-3"></div>
-                    <div class="w-3 h-3 rounded-full bg-white bg-opacity-40 progress-dot" id="dot-4"></div>
+            <div class="relative w-full bg-gray-900 rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl mb-4 border-white" style="aspect-ratio: 3/4; border-width: 4px;">
+                <video id="camera-stream" autoplay playsinline class="w-full h-full object-cover"></video>
+                <img id="camera-preview" class="absolute inset-0 w-full h-full object-cover hidden z-10" />
+                
+                <div id="strip-progress" class="absolute top-3 sm:top-5 left-0 right-0 flex justify-center gap-2 sm:gap-3 opacity-0 transition-opacity duration-300 z-20">
+                    <div class="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-white bg-opacity-40 progress-dot" id="dot-1"></div>
+                    <div class="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-white bg-opacity-40 progress-dot" id="dot-2"></div>
+                    <div class="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-white bg-opacity-40 progress-dot" id="dot-3"></div>
+                    <div class="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-white bg-opacity-40 progress-dot" id="dot-4"></div>
                 </div>
 
                 <div id="countdown-display" class="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 hidden z-20 backdrop-blur-sm">
-                    <span id="countdown-text" class="text-8xl font-serif text-white drop-shadow-lg">3</span>
-                    <span id="instruction-text" class="text-white text-opacity-90 text-sm mt-4 font-medium tracking-widest uppercase">Bersiaplah</span>
+                    <span id="countdown-text" class="text-6xl sm:text-8xl font-serif text-white drop-shadow-lg">3</span>
+                    <span id="instruction-text" class="text-white text-opacity-90 text-xs sm:text-sm mt-2 sm:mt-4 font-medium tracking-widest uppercase">Bersiaplah</span>
                 </div>
 
                 <div id="flash-effect" class="absolute inset-0 bg-white opacity-0 pointer-events-none transition-opacity duration-75 z-30"></div>
             </div>
 
-            <div id="camera-controls" class="w-full max-w-md bg-white p-5 rounded-2xl shadow-sm border border-gray-200">
-                <div class="grid grid-cols-2 gap-4 mb-5">
-                    <div>
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5" style="font-size: 10px;">Kamera Perangkat</label>
-                        <select id="camera-select" class="w-full bg-gray-50 border border-gray-200 text-gray-700 text-sm rounded-xl focus:ring-gray-500 focus:border-gray-500 p-3 outline-none transition appearance-none">
-                            <option value="">Mendeteksi...</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5" style="font-size: 10px;">Filter Estetik</label>
-                        <!-- Pilihan 12 Filter (termasuk B&W) -->
-                        <select id="filter-select" class="w-full bg-gray-50 border border-gray-200 text-gray-700 text-sm rounded-xl focus:ring-gray-500 focus:border-gray-500 p-3 outline-none transition appearance-none">
-                            <option value="none">Normal</option>
-                            <option value="grayscale(1) contrast(1.2)">Classic B&W</option>
-                            <option value="grayscale(1) contrast(1.5) brightness(0.9)">Dark B&W</option>
-                            <option value="grayscale(1) contrast(0.9) brightness(1.1)">Soft B&W</option>
-                            <option value="sepia(0.4) contrast(1.1) saturate(1.2)">Warm Vintage</option>
-                            <option value="sepia(0.8) contrast(1.1)">Sepia Classic</option>
-                            <option value="sepia(0.2) hue-rotate(-10deg) saturate(1.4)">Film Analog</option>
-                            <option value="hue-rotate(15deg) saturate(0.8) contrast(1.1) brightness(0.95)">Cinematic Muted</option>
-                            <option value="contrast(0.9) brightness(1.15) saturate(1.3) sepia(0.1)">Dreamy Pastel</option>
-                            <option value="contrast(1.3) saturate(1.5) sepia(0.2) hue-rotate(-15deg)">Retro 90s</option>
-                            <option value="hue-rotate(180deg) saturate(1.2) brightness(0.9)">Cool Blue</option>
-                            <option value="contrast(0.8) brightness(1.1) saturate(0.8)">Faded Matte</option>
-                        </select>
-                    </div>
+            <!-- Kontrol Kamera Minimalis -->
+            <div id="camera-action-controls" class="w-full flex flex-col items-center justify-center mt-1 h-20 sm:h-24 relative">
+                
+                <!-- Dekorasi Belakang untuk memperjelas efek Glass -->
+                <div class="absolute inset-0 flex justify-center items-center pointer-events-none z-[-1] opacity-60">
+                    <div class="w-24 h-24 sm:w-32 sm:h-32 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl sm:blur-2xl absolute -left-4 sm:left-4"></div>
+                    <div class="w-24 h-24 sm:w-32 sm:h-32 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl sm:blur-2xl absolute -right-4 sm:right-4"></div>
                 </div>
 
-                <div class="flex items-center justify-between bg-gray-50 p-3 rounded-xl border border-gray-100 mb-6">
-                    <div class="flex items-center gap-3">
-                        <svg style="width: 20px; height: 20px;" class="text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
-                        <span class="text-sm font-medium text-gray-700">Mode Malam (Terang)</span>
-                    </div>
-                    <label class="flex items-center cursor-pointer">
-                        <div class="relative">
-                            <input type="checkbox" id="night-mode-toggle" class="sr-only toggle-checkbox">
-                            <div class="toggle-label block"></div>
-                        </div>
-                    </label>
-                </div>
-
-                <button id="btn-start-capture" class="w-full bg-gray-800 text-white font-medium py-4 rounded-xl shadow-md hover:bg-gray-700 btn-press transition-all flex items-center justify-center gap-2">
-                    <span id="btn-start-text" class="text-base font-bold">Mulai Memotret</span>
+                <!-- Tombol Jepret Utama -->
+                <button id="btn-take-photo" class="w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center outline-none focus:outline-none btn-liquid-glass group">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 bg-gray-800 rounded-full group-hover:bg-gray-700 transition-colors shadow-inner"></div>
                 </button>
+
+                <!-- Tombol Konfirmasi (Ulang / Lanjut) -->
+                <div id="confirm-controls" class="w-full flex gap-2 sm:gap-4 justify-between hidden px-1 sm:px-2">
+                    <button id="btn-ulang-photo" class="flex-1 flex items-center justify-center gap-1 sm:gap-2 font-bold py-3 sm:py-4 rounded-xl sm:rounded-2xl outline-none focus:outline-none btn-liquid-glass text-xs sm:text-base" style="color: #ef4444;">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span>Ulang</span>
+                    </button>
+                    <button id="btn-lanjut-photo" class="flex-1 flex items-center justify-center gap-1 sm:gap-2 font-bold py-3 sm:py-4 rounded-xl sm:rounded-2xl outline-none focus:outline-none btn-liquid-glass-dark text-xs sm:text-base">
+                        <span>Lanjut</span>
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </button>
+                </div>
+
             </div>
+            </div>
+            
+            <!-- Kolom Kanan: Live Preview Frame -->
+            <div class="flex flex-col items-center pt-2" style="width: 32%; max-width: 220px;">
+                <span class="text-[9px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Live Preview</span>
+                <div id="live-frame-preview" class="w-full transition-all duration-300 transform hover:scale-105 origin-top">
+                    <!-- HTML frame akan di-generate via JS ke sini -->
+                </div>
+            </div>
+
         </section>
 
         <section id="view-result" class="w-full hidden flex-col items-center">
