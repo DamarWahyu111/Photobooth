@@ -32,6 +32,8 @@
             isFrontCamera: true,
             capturedPhotos: [], // Menyimpan foto murni (tanpa filter)
             finalUrl: null,
+            finalGifUrl: null,
+            localZipUrl: null,
             currentPhotoIndex: 1,
             totalPhotosToTake: 4
         };
@@ -248,9 +250,8 @@
                     const label = track.label.toLowerCase();
                     AppState.isFrontCamera = label.includes('front') || label.includes('user');
                     
-                    if (AppState.isFrontCamera) this.video.classList.add('mirror');
-                    else this.video.classList.remove('mirror');
-                    
+                    // Mirror dihilangkan sesuai request
+                    this.video.classList.remove('mirror');
                 } catch (err) { 
                     UI.showToast("Kamera gagal dimuat atau sedang digunakan.", "error"); 
                 }
@@ -290,20 +291,14 @@
                 const preview = document.getElementById('camera-preview');
                 preview.src = photoData;
                 preview.classList.remove('hidden');
-                
-                if (AppState.isFrontCamera) {
-                    preview.classList.add('mirror');
-                } else {
-                    preview.classList.remove('mirror');
-                }
+                preview.classList.remove('mirror');
 
                 // Masukkan ke live slot
                 const liveSlot = document.getElementById(`live-slot-${AppState.currentPhotoIndex}`);
                 if (liveSlot) {
                     liveSlot.src = photoData;
                     liveSlot.classList.remove('opacity-0');
-                    if (AppState.isFrontCamera) liveSlot.classList.add('mirror');
-                    else liveSlot.classList.remove('mirror');
+                    liveSlot.classList.remove('mirror');
                 }
                 
                 // Tampilkan tombol konfirmasi Ulang / Lanjut
@@ -360,7 +355,7 @@
 
                 // Ambil murni tanpa filter (Filter akan diterapkan saat renderCanvas)
                 ctx.filter = 'none'; 
-                if (AppState.isFrontCamera) { ctx.translate(tW, 0); ctx.scale(-1, 1); }
+                // ctx.scale(-1, 1) dihilangkan agar tidak mirror
 
                 ctx.drawImage(vid, sX, sY, sW, sH, 0, 0, tW, tH);
                 return cvs.toDataURL('image/jpeg', 0.95);
@@ -466,6 +461,27 @@
 
                     await this.drawBgPattern(ctx, config.drawBg, cvs.width, cvs.height);
 
+                    // Tambahan efek lucu (Background Stickers)
+                    if (config.drawBg === 'pattern-lucu' || config.drawBg.includes('y2k-stars') || config.id === 'lucu') {
+                        const drawHeart = (x, y, size, angle) => {
+                            ctx.save(); ctx.translate(x, y); ctx.rotate(angle); ctx.scale(size, size);
+                            ctx.beginPath(); ctx.moveTo(0, 0);
+                            ctx.bezierCurveTo(-15, -15, -30, 10, 0, 30);
+                            ctx.bezierCurveTo(30, 10, 15, -15, 0, 0);
+                            ctx.fillStyle = '#ff6b81'; ctx.globalAlpha = 0.6; ctx.fill(); ctx.restore();
+                        };
+                        const drawStar = (x, y, size, angle) => {
+                            ctx.save(); ctx.translate(x, y); ctx.rotate(angle); ctx.scale(size, size);
+                            ctx.beginPath();
+                            for(let j=0; j<5; j++) { ctx.lineTo(Math.cos( (18 + j*72)/180*Math.PI ) * 20, -Math.sin( (18 + j*72)/180*Math.PI ) * 20); ctx.lineTo(Math.cos( (54 + j*72)/180*Math.PI ) * 8, -Math.sin( (54 + j*72)/180*Math.PI ) * 8); }
+                            ctx.closePath(); ctx.fillStyle = '#feca57'; ctx.globalAlpha = 0.6; ctx.fill(); ctx.restore();
+                        };
+                        for(let i=0; i<15; i++) {
+                            drawHeart(Math.random()*cvs.width, Math.random()*(cvs.height - bottomM), 0.5 + Math.random()*1, Math.random()*Math.PI*2);
+                            drawStar(Math.random()*cvs.width, Math.random()*(cvs.height - bottomM), 0.5 + Math.random()*1, Math.random()*Math.PI*2);
+                        }
+                    }
+
                     if(config.drawBg.includes('pattern') || config.drawBg.startsWith('img:')) {
                         if(config.drawBg === 'pattern-grid') {
                             ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
@@ -539,6 +555,113 @@
                 link.click();
                 link.remove();
                 UI.showToast("Berhasil! Foto otomatis diunduh.", "success");
+            }
+        };
+
+        /* --- STREAMING_CHUNK: MODULE 4.5 - Generators (GIF & ZIP) --- */
+        const Generators = {
+            async generateGIF() {
+                return new Promise((resolve) => {
+                    const images = AppState.capturedPhotos;
+                    if(images.length === 0) return resolve(null);
+                    
+                    document.getElementById('gif-loading').classList.remove('hidden');
+                    document.getElementById('final-gif-img').classList.add('hidden');
+                    
+                    gifshot.createGIF({
+                        images: images,
+                        gifWidth: 600,
+                        gifHeight: 800,
+                        interval: 0.5,
+                        numFrames: images.length,
+                        sampleInterval: 10
+                    }, function(obj) {
+                        if(!obj.error) {
+                            const image = obj.image;
+                            AppState.finalGifUrl = image;
+                            document.getElementById('final-gif-img').src = image;
+                            document.getElementById('final-gif-img').classList.remove('hidden');
+                            document.getElementById('gif-loading').classList.add('hidden');
+                            resolve(image);
+                        } else {
+                            resolve(null);
+                        }
+                    });
+                });
+            },
+            
+            renderSingles() {
+                const container = document.getElementById('view-singles');
+                container.innerHTML = '';
+                AppState.capturedPhotos.forEach((src, idx) => {
+                    container.innerHTML += `<img src="${src}" class="w-full h-auto rounded-md shadow-sm border border-gray-100" alt="Foto ${idx+1}">`;
+                });
+            },
+            
+            async generateAndUploadZip() {
+                document.getElementById('qr-loading').classList.remove('hidden');
+                document.getElementById('qr-loading').classList.add('flex');
+                document.getElementById('qrcode-container').classList.add('hidden');
+                document.getElementById('qrcode-container').innerHTML = ''; // reset
+                document.getElementById('qr-error').classList.add('hidden');
+                
+                try {
+                    const zip = new JSZip();
+                    
+                    // Add Strip
+                    if(AppState.finalUrl) {
+                        const stripData = AppState.finalUrl.split(',')[1];
+                        zip.file("photobooth_strip.jpg", stripData, {base64: true});
+                    }
+                    
+                    // Add GIF
+                    if(AppState.finalGifUrl) {
+                        const gifData = AppState.finalGifUrl.split(',')[1];
+                        zip.file("photobooth_anim.gif", gifData, {base64: true});
+                    }
+                    
+                    // Add Singles
+                    AppState.capturedPhotos.forEach((src, idx) => {
+                        const singleData = src.split(',')[1];
+                        zip.file(`photo_${idx+1}.jpg`, singleData, {base64: true});
+                    });
+                    
+                    const content = await zip.generateAsync({type:"blob"});
+                    AppState.localZipUrl = URL.createObjectURL(content);
+                    
+                    const formData = new FormData();
+                    formData.append('file', content, 'photobox_session.zip');
+                    
+                    const response = await fetch('https://tmpfiles.org/api/v1/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const result = await response.json();
+                    if(result.status === 'success') {
+                        let dlUrl = result.data.url.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
+                        
+                        document.getElementById('qr-loading').classList.add('hidden');
+                        document.getElementById('qr-loading').classList.remove('flex');
+                        document.getElementById('qrcode-container').classList.remove('hidden');
+                        
+                        new QRCode(document.getElementById('qrcode-container'), {
+                            text: dlUrl,
+                            width: 150,
+                            height: 150,
+                            colorDark : "#1f2937",
+                            colorLight : "#ffffff",
+                            correctLevel : QRCode.CorrectLevel.L
+                        });
+                    } else {
+                        throw new Error('Upload failed');
+                    }
+                } catch(e) {
+                    console.error(e);
+                    document.getElementById('qr-loading').classList.add('hidden');
+                    document.getElementById('qr-loading').classList.remove('flex');
+                    document.getElementById('qr-error').classList.remove('hidden');
+                }
             }
         };
 
@@ -637,6 +760,11 @@
                     
                     const config = FrameConfigs[AppState.selectedFrameId];
                     await Capture.renderCanvas(config);
+                    
+                    // Generate other formats
+                    Generators.renderSingles();
+                    await Generators.generateGIF();
+                    Generators.generateAndUploadZip();
                 }
             });
 
@@ -647,7 +775,31 @@
                 UI.showToast("Silakan pilih frame dan mulai lagi.", "info");
             });
 
-            document.getElementById('btn-download').addEventListener('click', () => Capture.autoDownload());
+            document.getElementById('btn-download').addEventListener('click', () => {
+                if(!document.getElementById('view-strip').classList.contains('hidden')) {
+                    Capture.autoDownload();
+                } else if(!document.getElementById('view-gif').classList.contains('hidden')) {
+                    if(AppState.finalGifUrl) {
+                        const link = document.createElement('a');
+                        link.href = AppState.finalGifUrl;
+                        link.download = `Estetik_Anim_${Date.now()}.gif`;
+                        link.click();
+                        UI.showToast("Berhasil mengunduh GIF!", "success");
+                    } else {
+                        UI.showToast("GIF masih diproses...", "info");
+                    }
+                } else {
+                    if(AppState.localZipUrl) {
+                        const link = document.createElement('a');
+                        link.href = AppState.localZipUrl;
+                        link.download = `Estetik_Semua_Foto_${Date.now()}.zip`;
+                        link.click();
+                        UI.showToast("Berhasil mengunduh semua (ZIP)!", "success");
+                    } else {
+                        UI.showToast("Sedang menyiapkan file...", "info");
+                    }
+                }
+            });
 
             document.getElementById('btn-print').addEventListener('click', () => {
                 if (!AppState.finalUrl) return;
@@ -680,4 +832,28 @@
                     if(err.name !== 'AbortError') UI.showToast("Gagal membagikan.", "error");
                 }
             });
+
+            // Tab Navigation Logic
+            const switchTab = (tabId) => {
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('bg-gray-800', 'text-white');
+                    btn.classList.add('bg-white', 'text-gray-600');
+                });
+                document.getElementById('tab-' + tabId).classList.remove('bg-white', 'text-gray-600');
+                document.getElementById('tab-' + tabId).classList.add('bg-gray-800', 'text-white');
+                
+                document.querySelectorAll('.result-view').forEach(view => {
+                    view.classList.add('hidden');
+                    view.classList.remove('flex', 'grid');
+                });
+                
+                const targetView = document.getElementById('view-' + tabId);
+                targetView.classList.remove('hidden');
+                if(tabId === 'gif' || tabId === 'strip') targetView.classList.add('flex');
+                if(tabId === 'singles') targetView.classList.add('grid');
+            };
+
+            document.getElementById('tab-strip').addEventListener('click', () => switchTab('strip'));
+            document.getElementById('tab-gif').addEventListener('click', () => switchTab('gif'));
+            document.getElementById('tab-singles').addEventListener('click', () => switchTab('singles'));
         });

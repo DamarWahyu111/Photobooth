@@ -105,3 +105,8 @@
         .btn-liquid-glass-dark:active {
             transform: scale(0.95);
         }
+
+        /* Custom Tabs & QR */
+        .tab-btn.active { background-color: #1f2937; color: white; border-color: #1f2937; }
+        #qrcode-container img { margin: 0 auto; border-radius: 8px; }
+

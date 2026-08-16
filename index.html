@@ -129,7 +129,7 @@
             </div>
 
             <!-- Fitur Ganti Filter Pasca-Pemotretan -->
-            <div class="w-full max-w-md bg-white p-3 rounded-xl border border-gray-200 mb-6 flex items-center justify-between shadow-sm animate-fade-in">
+            <div class="w-full max-w-md bg-white p-3 rounded-xl border border-gray-200 mb-4 flex items-center justify-between shadow-sm animate-fade-in">
                 <label class="text-xs font-bold text-gray-500 uppercase tracking-wider ml-2" style="font-size: 10px;">Ganti Filter:</label>
                 <select id="post-filter-select" class="bg-gray-50 border border-gray-200 text-gray-700 text-sm rounded-lg focus:ring-gray-500 focus:border-gray-500 p-2 outline-none transition appearance-none w-2/3">
                     <option value="none">Normal</option>
@@ -147,9 +147,30 @@
                 </select>
             </div>
 
+            <!-- Tab Navigasi Hasil -->
+            <div class="flex gap-2 w-full max-w-md justify-center mb-4 animate-slide-up">
+                <button id="tab-strip" class="px-4 py-2 text-xs sm:text-sm font-bold rounded-full bg-gray-800 text-white shadow-sm transition-colors tab-btn">Strip</button>
+                <button id="tab-gif" class="px-4 py-2 text-xs sm:text-sm font-bold rounded-full bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 shadow-sm transition-colors tab-btn">GIF</button>
+                <button id="tab-singles" class="px-4 py-2 text-xs sm:text-sm font-bold rounded-full bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 shadow-sm transition-colors tab-btn">Satu-satu</button>
+            </div>
+
             <!-- Kontainer Foto Final -->
-            <div id="result-container" class="bg-white p-3 rounded-2xl shadow-xl border border-gray-200 mx-auto animate-slide-up mb-8 hover:-translate-y-1 transition-all duration-300 flex justify-center w-full" style="max-width: 320px;">
-                <img id="final-strip-img" src="" alt="Hasil" class="w-full h-auto rounded-lg shadow-sm">
+            <div id="result-container" class="bg-white p-3 rounded-2xl shadow-xl border border-gray-200 mx-auto animate-slide-up mb-4 transition-all duration-300 flex justify-center w-full" style="max-width: 320px; min-height: 400px;">
+                <!-- STRIP VIEW -->
+                <div id="view-strip" class="w-full flex justify-center result-view">
+                    <img id="final-strip-img" src="" alt="Hasil Strip" class="w-full h-auto rounded-lg shadow-sm">
+                </div>
+
+                <!-- GIF VIEW -->
+                <div id="view-gif" class="w-full hidden flex-col items-center justify-center result-view">
+                    <div id="gif-loading" class="text-sm font-bold text-gray-500 my-10 animate-pulse">Membuat GIF...</div>
+                    <img id="final-gif-img" src="" alt="Hasil GIF" class="w-full h-auto rounded-lg shadow-sm hidden">
+                </div>
+
+                <!-- SINGLES VIEW -->
+                <div id="view-singles" class="w-full hidden grid grid-cols-2 gap-2 result-view">
+                    <!-- Images will be injected here via JS -->
+                </div>
             </div>
 
             <div class="w-full max-w-md grid grid-cols-1 gap-3 sm:grid-cols-3 animate-slide-up" style="animation-delay: 0.1s;">
@@ -166,13 +187,30 @@
                     <span class="font-bold text-sm tracking-wide">Bagikan</span>
                 </button>
             </div>
-            <p class="text-center text-xs text-gray-400 mt-6">*Sistem otomatis mengunduh foto saat proses selesai.</p>
+
+            <!-- Section QR Code -->
+            <div id="qr-section" class="w-full max-w-md bg-white p-4 rounded-xl border border-gray-200 mt-6 flex flex-col items-center shadow-sm animate-slide-up">
+                <p class="text-xs font-bold text-gray-800 uppercase tracking-wider mb-2 text-center">Scan untuk Download Semua</p>
+                <div id="qr-loading" class="text-xs text-gray-500 mb-2 flex flex-col items-center gap-2">
+                    <svg class="animate-spin h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                    Mempersiapkan File...
+                </div>
+                <div id="qrcode-container" class="bg-white p-2 rounded-lg border border-gray-100 hidden"></div>
+                <div id="qr-error" class="text-xs text-red-500 hidden text-center">Gagal membuat QR Code. Silakan simpan manual.</div>
+                <p class="text-[10px] text-gray-400 mt-2 text-center">*Scan menggunakan kamera HP untuk mengunduh versi ZIP. Berlaku 1 jam.</p>
+            </div>
+            
+            <p class="text-center text-xs text-gray-400 mt-6 mb-8">*Sistem otomatis mengunduh hasil jepretan.</p>
         </section>
     </main>
 
     <!-- Kontainer Notifikasi -->
     <div id="toast-container" class="fixed top-5 left-1/2 transform -translate-x-1/2 flex flex-col gap-3 z-50 pointer-events-none w-max" style="max-width: 90%;"></div>
 
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gifshot/0.3.2/gifshot.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
