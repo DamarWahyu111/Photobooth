@@ -1,21 +1,25 @@
 /* --- MODULE 1: config.js --- */
         const FrameConfigs = {
-            'minimalis': { layout: '4-strip', name: 'Minimalis', desc: 'Putih Klasik', uiBg: '#ffffff', uiBoxes: '#e5e5e5', drawBg: '#ffffff', textColor: '#262626', subColor: '#737373' },
-            'noir': { layout: '4-strip', name: 'Noir', desc: 'Hitam Elegan', uiBg: '#171717', uiBoxes: '#404040', drawBg: '#171717', textColor: '#ffffff', subColor: '#a3a3a3' },
-            'oatmeal': { layout: '4-strip', name: 'Oatmeal', desc: 'Krem Hangat', uiBg: '#f5f0e6', uiBoxes: '#e5dfd3', drawBg: '#f5f0e6', textColor: '#5c5346', subColor: '#8a7f6f' },
-            'matcha': { layout: '4-strip', name: 'Matcha', desc: 'Hijau Soft', uiBg: '#eef2eb', uiBoxes: '#d8e0d3', drawBg: '#eef2eb', textColor: '#3d4a35', subColor: '#6a7a60' },
-            'denim': { layout: '4-strip', name: 'Denim', desc: 'Biru Pudar', uiBg: '#e8ecef', uiBoxes: '#cfd6db', drawBg: '#e8ecef', textColor: '#2a3b4a', subColor: '#5c7285' },
-            'mocha': { layout: '4-strip', name: 'Mocha', desc: 'Coklat Kopi', uiBg: '#4a3f35', uiBoxes: '#6b5d50', drawBg: '#4a3f35', textColor: '#f5f0e6', subColor: '#a89d91' },
-            'blush': { layout: '4-strip', name: 'Blush', desc: 'Gradasi Y2K', uiBg: 'linear-gradient(to bottom right, #ffe4e6, #fff7ed)', uiBoxes: 'rgba(255,255,255,0.6)', drawBg: 'gradient-blush', textColor: '#831843', subColor: '#be185d' },
-            'checker': { layout: '4-strip', name: 'Checker', desc: 'Papan Catur', uiBg: '#f5f5f4', uiBoxes: 'rgba(255,255,255,0.9)', drawBg: 'pattern-checker', textColor: '#262626', subColor: '#737373' },
-            'polkadot': { layout: '4-strip', name: 'Polkadot', desc: 'Titik Retro', uiBg: '#fafafa', uiBoxes: 'rgba(255,255,255,0.95)', drawBg: 'pattern-dots', textColor: '#262626', subColor: '#737373' },
-            'lucu': { layout: '4-strip', name: 'Lucu Gemes', desc: 'Pastel Ceria', uiBg: '#fdf4ff', uiBoxes: '#fce7f3', drawBg: 'pattern-lucu', textColor: '#831843', subColor: '#be185d' },
-            'sangar': { layout: '4-strip', name: 'Sangar', desc: 'Dark & Fierce', uiBg: '#0f172a', uiBoxes: '#7f1d1d', drawBg: 'pattern-grid', textColor: '#ef4444', subColor: '#b91c1c' },
-            'unisex': { layout: '4-strip', name: 'Urban', desc: 'Cool Unisex', uiBg: '#f3f4f6', uiBoxes: '#94a3b8', drawBg: '#cbd5e1', textColor: '#0f172a', subColor: '#334155' },
-            'y2k-stars': { layout: '4-strip', name: 'Y2K Stars', desc: 'Cute Pink 90s', uiBg: 'linear-gradient(135deg, #ffc8dd 0%, #bde0fe 100%)', uiBoxes: 'rgba(255,255,255,0.7)', drawBg: 'img:assets/bg_y2k_stars.png', textColor: '#ff006e', subColor: '#fb5607' },
-            'clouds': { layout: '4-strip', name: 'Dreamy Clouds', desc: 'Pastel Sky', uiBg: '#a2d2ff', uiBoxes: 'rgba(255,255,255,0.8)', drawBg: 'img:assets/bg_cloud_sky.png', textColor: '#0077b6', subColor: '#03045e' },
-            'vintage-floral': { layout: '4-strip', name: 'Vintage Floral', desc: 'Soft Warm', uiBg: '#e9edc9', uiBoxes: 'rgba(255,255,255,0.8)', drawBg: 'img:assets/bg_vintage_floral.png', textColor: '#606c38', subColor: '#283618' },
-            'polaroid': { layout: '1-shot', name: 'Polaroid', desc: '1 Foto Instan', uiBg: '#ffffff', uiBoxes: '#e5e5e5', drawBg: '#ffffff', textColor: '#171717', subColor: '#525252' }
+            'minimalis': { layout: '4-strip', name: 'Minimalis', desc: 'Putih Klasik', uiBg: '#ffffff', uiBoxes: '#e5e5e5', drawBg: '#ffffff', textColor: '#262626', subColor: '#737373', stickers: ['🤍', '✨', '☁️', '🕊️'] },
+            'noir': { layout: '4-strip', name: 'Noir', desc: 'Hitam Elegan', uiBg: '#171717', uiBoxes: '#404040', drawBg: '#171717', textColor: '#ffffff', subColor: '#a3a3a3', stickers: ['🖤', '✨', '🕷️', '🕸️'] },
+            'oatmeal': { layout: '4-strip', name: 'Oatmeal', desc: 'Krem Hangat', uiBg: '#f5f0e6', uiBoxes: '#e5dfd3', drawBg: '#f5f0e6', textColor: '#5c5346', subColor: '#8a7f6f', stickers: ['🤎', '🧸', '💌', '✨'] },
+            'matcha': { layout: '4-strip', name: 'Matcha', desc: 'Hijau Soft', uiBg: '#eef2eb', uiBoxes: '#d8e0d3', drawBg: '#eef2eb', textColor: '#3d4a35', subColor: '#6a7a60', stickers: ['💚', '🍵', '🍀', '✨'] },
+            'denim': { layout: '4-strip', name: 'Denim', desc: 'Biru Pudar', uiBg: '#e8ecef', uiBoxes: '#cfd6db', drawBg: '#e8ecef', textColor: '#2a3b4a', subColor: '#5c7285', stickers: ['💙', '🦋', '🌧️', '✨'] },
+            'mocha': { layout: '4-strip', name: 'Mocha', desc: 'Coklat Kopi', uiBg: '#4a3f35', uiBoxes: '#6b5d50', drawBg: '#4a3f35', textColor: '#f5f0e6', subColor: '#a89d91', stickers: ['🤎', '☕', '🍩', '✨'] },
+            'blush': { layout: '4-strip', name: 'Blush', desc: 'Gradasi Y2K', uiBg: 'linear-gradient(to bottom right, #ffe4e6, #fff7ed)', uiBoxes: 'rgba(255,255,255,0.6)', drawBg: 'gradient-blush', textColor: '#831843', subColor: '#be185d', stickers: ['💖', '🌸', '🎀', '✨'] },
+            'checker': { layout: '4-strip', name: 'Checker', desc: 'Papan Catur', uiBg: '#f5f5f4', uiBoxes: 'rgba(255,255,255,0.9)', drawBg: 'pattern-checker', textColor: '#262626', subColor: '#737373', stickers: ['🏁', '🖤', '🤍', '✨'] },
+            'polkadot': { layout: '4-strip', name: 'Polkadot', desc: 'Titik Retro', uiBg: '#fafafa', uiBoxes: 'rgba(255,255,255,0.95)', drawBg: 'pattern-dots', textColor: '#262626', subColor: '#737373', stickers: ['🔴', '❤️', '🎈', '✨'] },
+            'lucu': { layout: '4-strip', name: 'Lucu Gemes', desc: 'Pastel Ceria', uiBg: '#fdf4ff', uiBoxes: '#fce7f3', drawBg: 'pattern-lucu', textColor: '#831843', subColor: '#be185d', stickers: ['💕', '🍓', '🍰', '✨'] },
+            'sangar': { layout: '4-strip', name: 'Sangar', desc: 'Dark & Fierce', uiBg: '#0f172a', uiBoxes: '#7f1d1d', drawBg: 'pattern-grid', textColor: '#ef4444', subColor: '#b91c1c', stickers: ['❤️‍🔥', '💀', '🎸', '✨'] },
+            'unisex': { layout: '4-strip', name: 'Urban', desc: 'Cool Unisex', uiBg: '#f3f4f6', uiBoxes: '#94a3b8', drawBg: '#cbd5e1', textColor: '#0f172a', subColor: '#334155', stickers: ['🤍', '🛹', '🎧', '✨'] },
+            'y2k-stars': { layout: '4-strip', name: 'Y2K Stars', desc: 'Cute Pink 90s', uiBg: 'linear-gradient(135deg, #ffc8dd 0%, #bde0fe 100%)', uiBoxes: 'rgba(255,255,255,0.7)', drawBg: 'img:assets/bg_y2k_stars.png', textColor: '#ff006e', subColor: '#fb5607', stickers: ['💖', '⭐', '💿', '✨'] },
+            'clouds': { layout: '4-strip', name: 'Dreamy Clouds', desc: 'Pastel Sky', uiBg: '#a2d2ff', uiBoxes: 'rgba(255,255,255,0.8)', drawBg: 'img:assets/bg_cloud_sky.png', textColor: '#0077b6', subColor: '#03045e', stickers: ['💙', '☁️', '🕊️', '✨'] },
+            'vintage-floral': { layout: '4-strip', name: 'Vintage Floral', desc: 'Soft Warm', uiBg: '#e9edc9', uiBoxes: 'rgba(255,255,255,0.8)', drawBg: 'img:assets/bg_vintage_floral.png', textColor: '#606c38', subColor: '#283618', stickers: ['💛', '🌻', '🌼', '✨'] },
+            'polaroid': { layout: '1-shot', name: 'Polaroid', desc: '1 Foto Instan', uiBg: '#ffffff', uiBoxes: '#e5e5e5', drawBg: '#ffffff', textColor: '#171717', subColor: '#525252' },
+            'grid-cute': { layout: '2x2-grid', name: 'Grid Cute', desc: 'Pink 🎀 🧸', uiBg: '#ffe4e6', uiBoxes: '#fda4af', drawBg: '#ffe4e6', textColor: '#be123c', subColor: '#e11d48', stickers: ['🎀', '🌷', '🍰', '🧸'] },
+            'grid-retro': { layout: '2x2-grid', name: 'Grid Retro', desc: '90s 📻 📼', uiBg: '#fef08a', uiBoxes: '#fde047', drawBg: '#fef08a', textColor: '#854d0e', subColor: '#ca8a04', stickers: ['📻', '📼', '🕹️', '⭐'] },
+            'grid-dark': { layout: '2x2-grid', name: 'Grid Dark', desc: 'Night 🌙 ✨', uiBg: '#1e1b4b', uiBoxes: '#312e81', drawBg: '#1e1b4b', textColor: '#e0e7ff', subColor: '#a5b4fc', stickers: ['🌙', '✨', '🪐', '🔮'] },
+            'grid-nature': { layout: '2x2-grid', name: 'Grid Nature', desc: 'Green 🌿 🍄', uiBg: '#dcfce7', uiBoxes: '#bbf7d0', drawBg: '#dcfce7', textColor: '#14532d', subColor: '#166534', stickers: ['🌿', '🍄', '🦋', '🌸'] }
         };
 
         const Captions = [
@@ -56,6 +60,18 @@
                                 <div class="w-1/2 h-1 rounded-full" style="background-color: ${config.uiBoxes};"></div>
                             </div>
                         `;
+                    } else if (config.layout === '2x2-grid') {
+                        boxesHtml = `
+                            <div class="w-full grid grid-cols-2 gap-1 mb-2 border border-black border-opacity-5 p-1 rounded-sm" style="background-color: ${config.uiBg};">
+                                <div class="w-full rounded-sm shadow-sm" style="aspect-ratio: 1/1; background-color: ${config.uiBoxes};"></div>
+                                <div class="w-full rounded-sm shadow-sm" style="aspect-ratio: 1/1; background-color: ${config.uiBoxes};"></div>
+                                <div class="w-full rounded-sm shadow-sm" style="aspect-ratio: 1/1; background-color: ${config.uiBoxes};"></div>
+                                <div class="w-full rounded-sm shadow-sm" style="aspect-ratio: 1/1; background-color: ${config.uiBoxes};"></div>
+                            </div>
+                            <div class="h-4 w-full flex items-center justify-center">
+                                <div class="w-1/2 h-1 rounded-full opacity-50" style="background-color: ${config.textColor};"></div>
+                            </div>
+                        `;
                     } else {
                         boxesHtml = `
                             <div class="w-full flex-1 rounded-sm shadow-sm" style="background-color: ${config.uiBoxes};"></div>
@@ -70,12 +86,34 @@
 
                     let bgStyle = config.uiBg.startsWith('linear') ? `background-image: ${config.uiBg};` : `background-color: ${config.uiBg};`;
                     let patternClass = (config.drawBg && config.drawBg.includes('pattern')) ? config.drawBg : '';
+                    
+                    let stickersHtml = '';
+                    if (config.stickers && config.stickers.length > 0) {
+                        const positions = [
+                            { top: '8%', left: '12%', rotate: '-15deg' },
+                            { top: '35%', right: '10%', rotate: '15deg' },
+                            { bottom: '20%', left: '10%', rotate: '-10deg' },
+                            { bottom: '8%', right: '15%', rotate: '20deg' }
+                        ];
+                        stickersHtml = `<div class="absolute inset-0 pointer-events-none overflow-hidden">`;
+                        config.stickers.forEach((sticker, i) => {
+                            const pos = positions[i % positions.length];
+                            let styleStr = `position: absolute; font-size: 1.1rem; transform: rotate(${pos.rotate});`;
+                            if(pos.top) styleStr += ` top: ${pos.top};`;
+                            if(pos.bottom) styleStr += ` bottom: ${pos.bottom};`;
+                            if(pos.left) styleStr += ` left: ${pos.left};`;
+                            if(pos.right) styleStr += ` right: ${pos.right};`;
+                            stickersHtml += `<span style="${styleStr}">${sticker}</span>`;
+                        });
+                        stickersHtml += `</div>`;
+                    }
 
                     html += `
                         <label class="cursor-pointer group relative flex-shrink-0 snap-center w-36 sm:w-40">
                             <input type="radio" name="frame-choice" value="${id}" ${isChecked} class="sr-only frame-radio">
                             <div class="w-full p-2 rounded-2xl border-2 border-transparent frame-card transition-all flex flex-col gap-1 relative overflow-hidden shadow-sm ${patternClass}" style="aspect-ratio: 1/2.2; ${bgStyle} color: ${config.textColor};">
                                 ${boxesHtml}
+                                ${stickersHtml}
                                 <div class="absolute inset-0 ring-1 ring-inset ring-black ring-opacity-5 rounded-2xl pointer-events-none"></div>
                             </div>
                             <div class="text-center mt-3">
@@ -182,39 +220,76 @@
                 let boxesHtml = '';
                 const totalPhotos = config.layout === '1-shot' ? 1 : 4;
 
-                for (let i = 1; i <= totalPhotos; i++) {
-                    if (config.layout === '1-shot') {
+                if (config.layout === '2x2-grid') {
+                    boxesHtml = `<div class="w-full grid grid-cols-2 gap-1 mb-1">`;
+                    for (let i = 1; i <= 4; i++) {
                         boxesHtml += `
-                            <div class="w-full mb-2 border border-black border-opacity-5 relative overflow-hidden bg-gray-200" style="aspect-ratio: 1/1; background-color: ${config.uiBoxes};">
-                                <img id="live-slot-${i}" class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-300">
-                            </div>
-                            <div class="h-4 w-full flex items-center justify-center">
-                                <div class="w-1/2 h-1 rounded-full" style="background-color: ${config.uiBoxes};"></div>
-                            </div>
-                        `;
-                    } else {
-                        boxesHtml += `
-                            <div class="w-full flex-1 relative overflow-hidden rounded-[2px] shadow-sm bg-gray-200" style="background-color: ${config.uiBoxes};">
+                            <div class="w-full relative overflow-hidden rounded-sm shadow-sm bg-gray-200" style="aspect-ratio: 1/1; background-color: ${config.uiBoxes}; border: 1px solid rgba(0,0,0,0.05);">
                                 <img id="live-slot-${i}" class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-300">
                             </div>
                         `;
                     }
-                }
-                
-                if (config.layout !== '1-shot') {
-                     boxesHtml += `
-                            <div class="h-3 w-full mt-1 flex items-center justify-center">
-                                <div class="w-1/3 h-1 opacity-50 rounded-full" style="background-color: ${config.textColor};"></div>
-                            </div>
-                        `;
+                    boxesHtml += `</div>
+                            <div class="h-3 w-full flex items-center justify-center mt-1">
+                                <div class="w-1/2 h-1 opacity-50 rounded-full" style="background-color: ${config.textColor};"></div>
+                            </div>`;
+                } else {
+                    for (let i = 1; i <= totalPhotos; i++) {
+                        if (config.layout === '1-shot') {
+                            boxesHtml += `
+                                <div class="w-full mb-2 border border-black border-opacity-5 relative overflow-hidden bg-gray-200" style="aspect-ratio: 1/1; background-color: ${config.uiBoxes};">
+                                    <img id="live-slot-${i}" class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-300">
+                                </div>
+                                <div class="h-4 w-full flex items-center justify-center">
+                                    <div class="w-1/2 h-1 rounded-full" style="background-color: ${config.uiBoxes};"></div>
+                                </div>
+                            `;
+                        } else {
+                            boxesHtml += `
+                                <div class="w-full flex-1 relative overflow-hidden rounded-[2px] shadow-sm bg-gray-200" style="background-color: ${config.uiBoxes};">
+                                    <img id="live-slot-${i}" class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-300">
+                                </div>
+                            `;
+                        }
+                    }
+                    
+                    if (config.layout !== '1-shot') {
+                         boxesHtml += `
+                                <div class="h-3 w-full mt-1 flex items-center justify-center">
+                                    <div class="w-1/3 h-1 opacity-50 rounded-full" style="background-color: ${config.textColor};"></div>
+                                </div>
+                            `;
+                    }
                 }
 
                 let bgStyle = config.uiBg.startsWith('linear') ? `background-image: ${config.uiBg};` : `background-color: ${config.uiBg};`;
                 let patternClass = (config.drawBg && config.drawBg.includes('pattern')) ? config.drawBg : '';
+                
+                let stickersHtml = '';
+                if (config.stickers && config.stickers.length > 0) {
+                    const positions = [
+                        { top: '8%', left: '12%', rotate: '-15deg' },
+                        { top: '35%', right: '10%', rotate: '15deg' },
+                        { bottom: '20%', left: '10%', rotate: '-10deg' },
+                        { bottom: '8%', right: '15%', rotate: '20deg' }
+                    ];
+                    stickersHtml = `<div class="absolute inset-0 pointer-events-none overflow-hidden">`;
+                    config.stickers.forEach((sticker, i) => {
+                        const pos = positions[i % positions.length];
+                        let styleStr = `position: absolute; font-size: 1.4rem; transform: rotate(${pos.rotate});`;
+                        if(pos.top) styleStr += ` top: ${pos.top};`;
+                        if(pos.bottom) styleStr += ` bottom: ${pos.bottom};`;
+                        if(pos.left) styleStr += ` left: ${pos.left};`;
+                        if(pos.right) styleStr += ` right: ${pos.right};`;
+                        stickersHtml += `<span style="${styleStr}">${sticker}</span>`;
+                    });
+                    stickersHtml += `</div>`;
+                }
 
                 container.innerHTML = `
                     <div class="w-full p-2 md:p-3 rounded-2xl shadow-lg border border-gray-200 flex flex-col gap-1 md:gap-1.5 relative overflow-hidden ${patternClass}" style="aspect-ratio: 1/2.2; ${bgStyle}">
                         ${boxesHtml}
+                        ${stickersHtml}
                     </div>
                 `;
             }
@@ -283,7 +358,7 @@
                 await this.countdown(AppState.currentPhotoIndex, AppState.totalPhotosToTake);
                 
                 const config = FrameConfigs[AppState.selectedFrameId];
-                const isSquare = (config.layout === '1-shot');
+                const isSquare = (config.layout === '1-shot' || config.layout === '2x2-grid');
                 
                 const photoData = this.snap(isSquare);
                 
@@ -454,6 +529,59 @@
                     ctx.filter = canvasFilter; // Terapkan Filter di sini
                     ctx.drawImage(img, margin, margin, pW, pH);
                     ctx.filter = 'none';
+                } else if (config.layout === '2x2-grid') {
+                    const pH = 900; 
+                    bottomM = 400;
+                    const gap = 40;
+                    cvs.width = (pW * 2) + gap + (margin * 2);
+                    cvs.height = (pH * 2) + gap + margin + bottomM;
+                    
+                    await this.drawBgPattern(ctx, config.drawBg, cvs.width, cvs.height);
+                    
+                    for (let i = 0; i < 4; i++) {
+                        const img = await this.loadImg(AppState.capturedPhotos[i]);
+                        const col = i % 2;
+                        const row = Math.floor(i / 2);
+                        const xPos = margin + (col * (pW + gap));
+                        const yPos = margin + (row * (pH + gap));
+                        
+                        ctx.shadowColor = 'rgba(0,0,0,0.1)'; ctx.shadowBlur = 15; ctx.shadowOffsetY = 5;
+                        
+                        ctx.fillStyle = config.uiBoxes;
+                        ctx.fillRect(xPos - 12, yPos - 12, pW + 24, pH + 24);
+                        
+                        ctx.filter = canvasFilter;
+                        ctx.drawImage(img, xPos, yPos, pW, pH);
+                        
+                        ctx.filter = 'none';
+                        ctx.shadowColor = 'transparent';
+                        
+                        ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(0,0,0,0.1)';
+                        ctx.strokeRect(xPos, yPos, pW, pH);
+                    }
+                    
+                    if (config.stickers && config.stickers.length > 0) {
+                        ctx.font = '160px Arial';
+                        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                        const positions = [
+                            {x: margin + 20, y: margin + 30, a: -15, s: 0},
+                            {x: cvs.width - margin - 30, y: margin + pW/2, a: 15, s: 1},
+                            {x: margin + pW + gap/2, y: margin + pH + gap/2, a: 0, s: 2},
+                            {x: margin - 10, y: margin + pH + gap + pH/2, a: -10, s: 3},
+                            {x: margin + pW + gap + pW/2, y: margin - 40, a: 10, s: 0},
+                            {x: margin + pW/2 - 50, y: cvs.height - bottomM + 20, a: -20, s: 1},
+                            {x: cvs.width - margin + 20, y: cvs.height - bottomM - 50, a: 20, s: 2}
+                        ];
+                        
+                        positions.forEach(pos => {
+                            const sticker = config.stickers[pos.s % config.stickers.length];
+                            ctx.save();
+                            ctx.translate(pos.x, pos.y);
+                            ctx.rotate(pos.a * Math.PI / 180);
+                            ctx.fillText(sticker, 0, 0);
+                            ctx.restore();
+                        });
+                    }
                 } else {
                     const pH = 1200;
                     cvs.width = pW + (margin * 2);
@@ -509,6 +637,28 @@
                             ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(0,0,0,0.05)';
                             ctx.strokeRect(margin, yPos, pW, pH);
                         }
+                    }
+
+                    if (config.stickers && config.stickers.length > 0) {
+                        ctx.font = '160px Arial';
+                        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                        const positions = [
+                            {x: margin + 80, y: margin + 80, a: -15, s: 0},
+                            {x: cvs.width - margin - 80, y: margin + pH - 80, a: 15, s: 1},
+                            {x: margin + 80, y: margin + pH + margin + 80, a: -10, s: 2},
+                            {x: cvs.width - margin - 80, y: margin + (2 * (pH + margin)) + 80, a: 20, s: 3},
+                            {x: margin + 80, y: margin + (3 * (pH + margin)) + 80, a: 10, s: 0},
+                            {x: cvs.width - margin - 80, y: cvs.height - bottomM - 80, a: -20, s: 1}
+                        ];
+                        
+                        positions.forEach(pos => {
+                            const sticker = config.stickers[pos.s % config.stickers.length];
+                            ctx.save();
+                            ctx.translate(pos.x, pos.y);
+                            ctx.rotate(pos.a * Math.PI / 180);
+                            ctx.fillText(sticker, 0, 0);
+                            ctx.restore();
+                        });
                     }
                 }
 
