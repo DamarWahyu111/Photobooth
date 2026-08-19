@@ -225,7 +225,7 @@
                     for (let i = 1; i <= 4; i++) {
                         boxesHtml += `
                             <div class="w-full relative overflow-hidden rounded-sm shadow-sm bg-gray-200" style="aspect-ratio: 1/1; background-color: ${config.uiBoxes}; border: 1px solid rgba(0,0,0,0.05);">
-                                <img id="live-slot-${i}" class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-300">
+                                <img id="live-slot-${i}" class="absolute inset-0 w-full h-full object-cover object-top opacity-0 transition-opacity duration-300">
                             </div>
                         `;
                     }
@@ -238,7 +238,7 @@
                         if (config.layout === '1-shot') {
                             boxesHtml += `
                                 <div class="w-full mb-2 border border-black border-opacity-5 relative overflow-hidden bg-gray-200" style="aspect-ratio: 1/1; background-color: ${config.uiBoxes};">
-                                    <img id="live-slot-${i}" class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-300">
+                                    <img id="live-slot-${i}" class="absolute inset-0 w-full h-full object-cover object-top opacity-0 transition-opacity duration-300">
                                 </div>
                                 <div class="h-4 w-full flex items-center justify-center">
                                     <div class="w-1/2 h-1 rounded-full" style="background-color: ${config.uiBoxes};"></div>
@@ -247,7 +247,7 @@
                         } else {
                             boxesHtml += `
                                 <div class="w-full flex-1 relative overflow-hidden rounded-[2px] shadow-sm bg-gray-200" style="background-color: ${config.uiBoxes};">
-                                    <img id="live-slot-${i}" class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-300">
+                                    <img id="live-slot-${i}" class="absolute inset-0 w-full h-full object-cover object-top opacity-0 transition-opacity duration-300">
                                 </div>
                             `;
                         }
@@ -292,6 +292,24 @@
                         ${stickersHtml}
                     </div>
                 `;
+
+                setTimeout(() => {
+                    for (let i = 1; i <= totalPhotos; i++) {
+                        const slotImg = document.getElementById(`live-slot-${i}`);
+                        if (slotImg) {
+                            const parent = slotImg.parentElement;
+                            parent.style.cursor = 'pointer';
+                            parent.addEventListener('click', () => {
+                                if (!slotImg.classList.contains('opacity-0') && slotImg.src) {
+                                    const modal = document.getElementById('full-photo-modal');
+                                    const modalImg = document.getElementById('full-photo-img');
+                                    modalImg.src = slotImg.src;
+                                    modal.classList.remove('hidden');
+                                }
+                            });
+                        }
+                    }
+                }, 10);
             }
         };
 
@@ -325,8 +343,11 @@
                     const label = track.label.toLowerCase();
                     AppState.isFrontCamera = label.includes('front') || label.includes('user');
                     
-                    // Mirror dihilangkan sesuai request
-                    this.video.classList.remove('mirror');
+                    if (AppState.isFrontCamera) {
+                        this.video.classList.add('mirror');
+                    } else {
+                        this.video.classList.remove('mirror');
+                    }
                 } catch (err) { 
                     UI.showToast("Kamera gagal dimuat atau sedang digunakan.", "error"); 
                 }
@@ -430,7 +451,11 @@
 
                 // Ambil murni tanpa filter (Filter akan diterapkan saat renderCanvas)
                 ctx.filter = 'none'; 
-                // ctx.scale(-1, 1) dihilangkan agar tidak mirror
+                
+                if (AppState.isFrontCamera) {
+                    ctx.translate(tW, 0);
+                    ctx.scale(-1, 1);
+                }
 
                 ctx.drawImage(vid, sX, sY, sW, sH, 0, 0, tW, tH);
                 return cvs.toDataURL('image/jpeg', 0.95);
@@ -817,6 +842,17 @@
 
         /* --- STREAMING_CHUNK: MODULE 5 - Event Listeners / Interaksi Tombol --- */
         window.addEventListener('DOMContentLoaded', () => {
+            // Modal Full Photo Logic
+            const modal = document.getElementById('full-photo-modal');
+            const btnCloseModal = document.getElementById('btn-close-modal');
+            if(modal && btnCloseModal) {
+                const closeModal = () => modal.classList.add('hidden');
+                btnCloseModal.addEventListener('click', closeModal);
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) closeModal();
+                });
+            }
+
             UI.initFrames();
 
             document.getElementById('btn-open-camera').addEventListener('click', () => {
